@@ -14,3 +14,8 @@
   - The final model just seems to predict somewhat of an average of the features as shown below
 
 <img src="image.png"></img>
+
+
+- Thoughts
+  - It seems critical that we need a model that is in some sense "evolving"
+  - For region based modelling, perform ablation into individual features. And also, into region based plotting 
