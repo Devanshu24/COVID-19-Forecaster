@@ -20,7 +20,7 @@
   - It seems critical that we need a model that is in some sense "evolving"
   - For region based modelling, perform ablation into individual features. And also, into region based plotting 
 
-## 19th April 2021
+### 19th April 2021
 #### Vybhav
 - Transfer Learning
   - Tested the basic model (lagged mobility + testing data) on UK data as they've already had their second peak
@@ -40,4 +40,5 @@
   - ![mp](https://user-images.githubusercontent.com/56106207/115298718-70c5e980-a17b-11eb-9275-0f2560532c1b.png)
 
 
-
+#### Sharad
+- Created Regional Mobility DataFrames
