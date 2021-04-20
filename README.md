@@ -53,10 +53,23 @@
 #### Vybhav
 
 - Basic Model : LSTM with 7 day lagged mobility
-  - Setting window size to 1 improves performance drastically (Unsure why this is the case?)
-  - R2 scores (5 splits) : (-24.726, 0.261, 0.202, 0.826, 0.643)
-  - Very poor predictions for the initial stage of the pandemic, predicts a much faster rise in cases than was actually seen
-  - Predicts the drop in cases after the first peak and the occurrence of the second peak relatively well
+  - Model Summary
+    - Used 7 day lagged mobility instead of direct mobility for each of the 6 categories
+    - 7 day lagged mobility for category x on day **day** = Average mobility for category x from **day-7** to **day-2** (Reference : https://www.medrxiv.org/content/10.1101/2020.12.21.20248523v1.full )
+    - Other features : cases, deaths, tests, tests per case and positive rate
+    - Model parameters : n_features=11, n_hidden=512, seq_len=1, n_layers=2
+    - Splitting done with TimeSeriesSplit(n_splits = 5)
+    - Testing done with train_model_with_crossval() from the CovidPredictor notebook, with num_epochs set to 150
 
+  - Results
+    - R2 scores (5 splits) : (-24.726, 0.261, 0.202, 0.826, 0.643)
+    - Very poor predictions for the initial stage of the pandemic, predicts a much faster rise in cases than was actually seen (First image)
+    - Predicts the drop in cases after the first peak and the occurrence of the second peak relatively well
+
+![image](https://user-images.githubusercontent.com/81354041/115383217-2f712080-a1f3-11eb-8d00-4f77e063848c.png) 
 ![image](https://user-images.githubusercontent.com/81354041/115362443-2a09db00-a1df-11eb-8925-fc2ffa305a42.png)
+
+  - Questions/Thoughts
+    - Setting window size (seq_len) to 1 improves performance drastically, unsure why?
+ 
 
