@@ -71,5 +71,8 @@
 
   - Questions/Thoughts
     - Setting window size (seq_len) to 1 improves performance drastically, unsure why?
+
+#### Sharad
+- Added Seq2Seq notebook
  
 
