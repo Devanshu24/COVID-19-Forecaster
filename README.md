@@ -48,3 +48,15 @@
 
 #### Sharad
 - Created Regional Mobility Aggregator Notebooks and DataFrames
+
+### 20th April
+#### Vybhav
+
+- Basic Model : LSTM with 7 day lagged mobility
+  - Setting window size to 1 improves performance drastically (Unsure why this is the case?)
+  - R2 scores (5 splits) : (-24.726, 0.261, 0.202, 0.826, 0.643)
+  - Very poor predictions for the initial stage of the pandemic, predicts a much faster rise in cases than was actually seen
+  - Predicts the drop in cases after the first peak and the occurrence of the second peak relatively well
+
+![image](https://user-images.githubusercontent.com/81354041/115362443-2a09db00-a1df-11eb-8925-fc2ffa305a42.png)
+
