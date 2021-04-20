@@ -29,7 +29,12 @@
 ![image](https://user-images.githubusercontent.com/81354041/115293507-0a3dcd00-a175-11eb-81d7-0169363d28a3.png)
 ![image](https://user-images.githubusercontent.com/81354041/115293539-145fcb80-a175-11eb-8c33-a5726174732a.png)
 
+- Basic Model : Linear Regression
+  - Features considered : 7 day lagged mobility, daily tests, daily deaths
+  - Seems to do better than LSTM, though still pretty poor
 
+![image](https://user-images.githubusercontent.com/81354041/115298034-8b4b9300-a17a-11eb-9809-bfb8f779eae6.png)
+![image](https://user-images.githubusercontent.com/81354041/115298153-b9c96e00-a17a-11eb-9fcc-0114bc2ca6c0.png)
 
 #### Devanshu
 - Regional Mobility Analysis
