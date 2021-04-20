@@ -13,7 +13,8 @@
   - Basic Model suffers from distribution shift. In particular, it is not accounting for features in the future period. 
   - The final model just seems to predict somewhat of an average of the features as shown below
 
-<img src="image.png"></img>
+![image](https://user-images.githubusercontent.com/56106207/115334589-4bf06700-a1b9-11eb-843e-255d6cd07cd3.png)
+
 
 
 - Thoughts
