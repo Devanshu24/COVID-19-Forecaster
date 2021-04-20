@@ -66,8 +66,8 @@
     - Very poor predictions for the initial stage of the pandemic, predicts a much faster rise in cases than was actually seen (First image)
     - Predicts the drop in cases after the first peak and the occurrence of the second peak relatively well
 
-![image](https://user-images.githubusercontent.com/81354041/115383217-2f712080-a1f3-11eb-8d00-4f77e063848c.png) 
-![image](https://user-images.githubusercontent.com/81354041/115362443-2a09db00-a1df-11eb-8925-fc2ffa305a42.png)
+  ![image](https://user-images.githubusercontent.com/81354041/115383217-2f712080-a1f3-11eb-8d00-4f77e063848c.png) 
+  ![image](https://user-images.githubusercontent.com/81354041/115362443-2a09db00-a1df-11eb-8925-fc2ffa305a42.png)
 
   - Questions/Thoughts
     - Setting window size (seq_len) to 1 improves performance drastically, unsure why?
