@@ -72,7 +72,33 @@
   - Questions/Thoughts
     - Setting window size (seq_len) to 1 improves performance drastically, unsure why?
 
+### 21st April
+
 #### Sharad
 - Added Seq2Seq notebook
  
+#### Vybhav
+- Transfer Learning with LSTM model, UK data
+  - Summary
+    - Fit an LSTM model to predict the number of cases per day in the UK (no cross-validation)
+    - Trained the resulting model on the first 50 days of the India dataset, and then checked accuracy of prediction on the remaining ~330 days
+    - To compare performance, trained an 'unitiliased' model on the first 50 days of the India dataset and predicted the remainining days with this model
+    - Notebook and all other charts, scores etc. available on wandb - run : **major-shape-19**
 
+  - Results
+    - The results aren't very good, but the pre-trained model at least considerably outperforms the uninitialised model, which is somewhat encouraging
+    - The first graph is the pre-trained model, while the second is the uninitialised one.
+    
+
+    | Model                 | R2     | MAE   | MSE   |
+    | --------------------- | ------:| -----:| -----:|
+    | Pre-trained on UK data| 0.1177 | 0.1904| 0.0511|
+    | Uninitialised model   |-1.6856 | 0.3186| 0.1556|
+    
+    ![image](https://user-images.githubusercontent.com/81354041/115522973-36a73580-a2aa-11eb-9be0-cb66f043f522.png)
+    ![image](https://user-images.githubusercontent.com/81354041/115523015-40c93400-a2aa-11eb-850b-283e27d3c492.png)
+    
+  - Possible Reasons for Poor Performance
+    - Since the pre-trained model seems to predict the general 'shape' of the India curve, the vast difference in population might be the main reason for the poor performance, since the difference in population isn't being handled in any way.
+    - Other relevent factors like access to health care facilities, government measures etc. are not accounted for in this approach.
+    - Other than training on a few datapoints from the India dataset, I haven't done anything to help 'translate' the UK model to the India dataset. I'm unfamiliar with transfer learning in general, so don't know if anything extra can be done to improve learning?
