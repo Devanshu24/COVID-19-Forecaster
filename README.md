@@ -109,4 +109,7 @@
     - Great 1 day prediction, terrible multi-day prediction
   - Data Correlation (finally!)
     - ![corr](https://user-images.githubusercontent.com/56106207/115714500-cde8b780-a394-11eb-904c-3c88b6883a70.png)
+    - wrt new_cases
+      - ![corr_wrt_new_cases](https://user-images.githubusercontent.com/56106207/115716551-ea85ef00-a396-11eb-8347-c0c909807b05.png)
+
 
