@@ -102,3 +102,8 @@
     - Since the pre-trained model seems to predict the general 'shape' of the India curve, the vast difference in population might be the main reason for the poor performance, since the difference in population isn't being handled in any way.
     - Other relevant factors like access to health care facilities, government measures etc. are not accounted for in this approach.
     - Other than training on a few datapoints from the India dataset, I haven't done anything to help 'translate' the UK model to the India dataset. I'm unfamiliar with transfer learning in general, so don't know if anything extra can be done to improve learning?
+
+### 22nd April
+#### Devanshu
+  - Added SARIMAX notebook
+    - Great 1 day prediction, terrible multi-day prediction
