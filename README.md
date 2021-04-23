@@ -113,11 +113,13 @@
       - ![corr_wrt_new_cases](https://user-images.githubusercontent.com/56106207/115716551-ea85ef00-a396-11eb-8347-c0c909807b05.png)
 
 #### Sharad
-- Exploring simpler polynomial models in scipy. For forecasting (and smoothening)
+- Simpler polynomial models in scipy. For forecasting (and smoothening)
 - District Wise Data Aggregation
-- Seq2Seq Modelling on all Indian districts (treated as IID samples). Gives 
-- Side Note: Meta Learning/FL based approach still wont utilize the edge weight of a connectivity graph (assuming thats available)
-- Next: Meta Learning for Seq2Seq
-- Next: Exploring Transfer Learning, CI.
+- Seq2Seq Modelling on all Indian districts (treated as IID samples). 
+- Side Note: Meta Learning/FL based approach still wont utilize the edge weight of a connectivity graph (assuming that's available)
+- Next: 
+  - Addition of Other features (deaths, stringency, etc)
+  - Meta Learning for Seq2Seq
+  - Exploring Transfer Learning, CI.
 
 
