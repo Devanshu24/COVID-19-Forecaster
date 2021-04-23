@@ -119,7 +119,7 @@
 - Side Note: Meta Learning/FL based approach still wont utilize the edge weight of a connectivity graph (assuming that's available)
 - Next: 
   - Addition of Other features (deaths, stringency, etc)
-  - Meta Learning for Seq2Seq
+  - Meta Learning/FSL for Seq2Seq
   - Exploring Transfer Learning, CI.
 
 
