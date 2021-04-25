@@ -3,11 +3,13 @@ import torch.nn as nn
 
 
 class CoronaVirusPredictor(nn.Module):
-    def __init__(self, n_features, n_hidden, seq_len, n_layers=2):
+    def __init__(
+        self, n_features, previous_days, forecast_days, n_hidden=64, n_layers=2
+    ):
         super(CoronaVirusPredictor, self).__init__()
 
         self.n_hidden = n_hidden
-        self.seq_len = seq_len
+        self.seq_len = previous_days
         self.n_layers = n_layers
 
         self.lstm = nn.LSTM(
@@ -17,7 +19,8 @@ class CoronaVirusPredictor(nn.Module):
             dropout=0.5,
         )
 
-        self.linear = nn.Linear(in_features=n_hidden, out_features=1)
+        self.linear = nn.Linear(in_features=n_hidden, out_features=forecast_days)
+        self.forecast_days = forecast_days
 
     def reset_hidden_state(self):
         self.hidden = (

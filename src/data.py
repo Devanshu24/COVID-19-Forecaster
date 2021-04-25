@@ -3,6 +3,7 @@ import random
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import torch
 
 from utils import smoothen_data
 
@@ -26,7 +27,7 @@ class Data(object):
         df = self.get_features(features)
         xs = []
         ys = []
-        for i in range(0, len(df) - seq_len - 1 - j, seq_len + 1 + j):
+        for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
             x = df[i : (i + seq_len)].to_numpy()
             y = (
                 df[(i + seq_len) : i + seq_len + 1 + j]["new cases"]
@@ -35,7 +36,7 @@ class Data(object):
             )  # [0]
             xs.append(x)
             ys.append(y)
-        return np.array(xs, dtype=np.float64), np.array(ys, dtype=np.float64)
+        return torch.tensor(xs, dtype=torch.float), torch.tensor(ys, dtype=torch.float)
 
     def smoothen_df(self, cols=None):
         if cols is None:
@@ -103,7 +104,7 @@ class Data(object):
             xtrain.append(X)
             ytrain.append(y)
 
-        return np.asarray(xtrain), np.asarray(ytrain)
+        return torch.tensor(xtrain), torch.tensor(ytrain)
 
     def get_mini_dataset(batchSize, iters, num_regions, datasets, test=False):
         # Shots is assumed to be all
@@ -183,8 +184,19 @@ class Data(object):
             ytest.append(yte)
 
         return (
-            np.asarray(xtrain),
-            np.asarray(ytrain),
-            np.asarray(xtest),
-            np.asarray(ytest),
+            torch.tensor(xtrain),
+            torch.tensor(ytrain),
+            torch.tensor(xtest),
+            torch.tensor(ytest),
         )
+
+
+if __name__ == "__main__":
+    df = pd.DataFrame({"new cases": np.arange(20)})
+    # print(df)
+    data = Data(df, 10, 7)
+    data.preprocess()
+    X, y = data.sliding_window(features=["new cases"], seq_len=6, j=0)
+    print(X.shape, y.shape)
+    print(X)
+    print(y)
