@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-from src.utils import smoothen_data
+from utils import smoothen_data
 
 
 class Data(object):
@@ -15,13 +15,8 @@ class Data(object):
         self.scaling_params = None
 
     def preprocess(self):
-        if "Date" in self.df.columns:
-            df_no_date = self.df.drop("Date", axis=1)
-            df_no_date = df_no_date[df_no_date > 0]
-            self.df[df_no_date.columns] = df_no_date
-        else:
-            self.df = self.df[self.df > 0]
-
+        cols = [i for i in self.df.columns if self.df[i].dtype == float]
+        self.df[cols] = self.df[cols][self.df[cols] > 0]
         self.df = self.df.dropna()
 
     def get_features(self, features: list):

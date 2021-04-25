@@ -1,7 +1,9 @@
 import numpy as np
+import pandas as pd
 import torch
 
 from data import Data
+from model import CoronaVirusPredictor
 
 config = {
     "num_epochs": 60,
@@ -53,3 +55,20 @@ def train_model(model, config, dataset: Data, test_data=None, test_labels=None):
         optimiser.step()
 
     return model.eval(), train_hist, test_hist
+
+
+if __name__ == "__main__":
+    df = pd.read_csv("../data/India_OWID_reduced.csv")
+    # print(df)
+    data = Data(df, 10, 1)
+    data.preprocess()
+    print(data.df.shape)
+    X, y = data.sliding_window(["new_cases", "new_deaths"], 2)
+    X = torch.tensor(X, dtype=torch.float)
+    y = torch.tensor(y, dtype=torch.float)
+    print(X.shape, y.shape)
+    model = CoronaVirusPredictor(2, 64, 2, 2)
+    model = model.float()
+    model.reset_hidden_state()
+    model = model.float()
+    wo = model(X)
