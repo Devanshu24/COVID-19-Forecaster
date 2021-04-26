@@ -10,8 +10,8 @@ from data import Data
 from model import CoronaVirusPredictor
 
 config = {
-    "num_epochs": 6000,
-    "features": ["new_cases"],
+    "num_epochs": 1000,
+    "features": ["new_cases", "7_day_lagged_parks_percent_change_from_baseline"],
 }
 
 
@@ -57,12 +57,15 @@ def train_model_with_crossval(
     config: dict,
     tscv: TimeSeriesSplit,
 ):
+    model = CoronaVirusPredictor(2, 28, 1)
     model = model.float()
 
     X, y = dataset.sliding_window(
         config["features"], dataset.previous_days, dataset.forecast_days - 1
     )
     print(X.shape, y.shape)
+    X = X / 100000
+    y = y / 100000
 
     r2_scores, test_error_mse, test_error_mae = [], [], []
     train, test = {}, {}
@@ -72,6 +75,8 @@ def train_model_with_crossval(
 
     v = 0
     for train_index, test_index in tscv.split(X):
+        model = CoronaVirusPredictor(2, 28, 1)
+        model = model.float()
         v += 1
         #         print(train_index.shape, test_index.shape)
         X_train, y_train = X[train_index], y[train_index]
@@ -92,30 +97,26 @@ def train_model_with_crossval(
         loss_fn = torch.nn.L1Loss()
         loss_fn2 = torch.nn.MSELoss()
 
-        optimiser = torch.optim.Adam(model.parameters(), lr=1e-3)
+        optimiser = torch.optim.Adam(model.parameters(), lr=1e-5)
         num_epochs = config["num_epochs"]
 
         train_hist = np.zeros(num_epochs)
         test_hist = np.zeros(num_epochs)
         train["loss"][v] = []
         test["loss"][v] = []
+        with trange(num_epochs) as gg:
+            for t in gg:
+                model.train()
+                model.reset_hidden_state()
+                y_pred = model(X_train)
+                loss = loss_fn2(y_pred.float().flatten(), y_train.float().flatten())
 
-        for t in trange(num_epochs):
-            model.train()
-            model.reset_hidden_state()
-            y_pred = model(X_train)
-            # print(X_train.shape)
-            # print(y_train.shape)
-            # print(y_pred.shape)
-            loss = loss_fn2(y_pred.float().flatten(), y_train.float().flatten())
-
-            # print(loss)
-            train["loss"][v].append(loss.item())
-            train_hist[t] = loss.item()
-            optimiser.zero_grad()
-            loss.backward()
-
-            optimiser.step()
+                gg.set_postfix({"loss": loss.item()})
+                optimiser.zero_grad()
+                loss.backward()
+                optimiser.step()
+                train_hist[t] = loss.item()
+                train["loss"][v].append(loss.item())
 
         with torch.no_grad():
             model.eval()
@@ -135,6 +136,9 @@ def train_model_with_crossval(
             test_error_mse.append(
                 loss_fn2(y_test_pred.float().flatten(), y_test.flatten()).item()
             )
+            # print(y_test.numpy().flatten())
+            # print(y_test_pred.numpy().flatten())
+            # print(loss.item())
             r2_scores.append(
                 r2_score(y_test.numpy().flatten(), y_test_pred.numpy().flatten())
             )
@@ -148,53 +152,61 @@ def train_model_with_crossval(
 if __name__ == "__main__":
     # df = pd.DataFrame({"new cases": np.arange(200)})
     print("I am starting!\n")
-    df = pd.read_csv("../data/India_OWID_reduced.csv")
-    dataset = Data(df, 10, 1)
-    dataset.preprocess()
-    dataset.smoothen_df()
+    df = pd.read_csv("../data/India_OWID_with_mobility_data.csv")
+    dataset = Data(df, 28, 1)
+    # dataset.preprocess()
+    # dataset.smoothen_df()
+    print(dataset.get_features(config["features"]).count())
+    X, y = dataset.sliding_window(
+        config["features"], dataset.previous_days, dataset.forecast_days - 1
+    )
     # print(dataset.df)
-    model = CoronaVirusPredictor(1, 10, 1)
+    print(len(X))
+    print(X.shape)
+    print(y.shape)
+    # exit(0)
+    model = CoronaVirusPredictor(2, 28, 1)
     tscv = TimeSeriesSplit()
     r2_scores, test_error_mae, test_error_mse, train, test = train_model_with_crossval(
         model, dataset, config, tscv
     )
-    for i in range(2, 6):
+    for i in range(1, 6):
         plt.plot(train["loss"][i], label=i)
     plt.legend(loc="best")
     plt.show()
     # print(test["true"][1])
-    # for i in range(1, 6):
-    #     #     fig, ax = plt.subplots(figsize=(6,6))
-    #     plt.plot(
-    #         list(range(0, len(train["pred"][i]))),
-    #         train["pred"][i],
-    #         label="Train Predicted",
-    #     )
-    #     plt.plot(
-    #         list(range(0, len(train["true"][i]))), train["true"][i], label="Train True"
-    #     )
-    #     plt.plot(
-    #         list(
-    #             range(
-    #                 len(train["pred"][i]), len(train["pred"][i]) + len(test["pred"][i])
-    #             )
-    #         ),
-    #         test["pred"][i],
-    #         label="Test Predicted",
-    #         linestyle="dotted",
-    #     )
-    #     plt.plot(
-    #         list(
-    #             range(
-    #                 len(train["true"][i]), len(train["true"][i]) + len(test["true"][i])
-    #             )
-    #         ),
-    #         test["true"][i],
-    #         label="Test True",
-    #         linestyle="dotted",
-    #     )
-    #     plt.legend()
-    #     plt.show()
+    for i in range(1, 6):
+        #     fig, ax = plt.subplots(figsize=(6,6))
+        plt.plot(
+            list(range(0, len(train["pred"][i]))),
+            train["pred"][i],
+            label="Train Predicted",
+        )
+        plt.plot(
+            list(range(0, len(train["true"][i]))), train["true"][i], label="Train True"
+        )
+        plt.plot(
+            list(
+                range(
+                    len(train["pred"][i]), len(train["pred"][i]) + len(test["pred"][i])
+                )
+            ),
+            test["pred"][i],
+            label="Test Predicted",
+            linestyle="dotted",
+        )
+        plt.plot(
+            list(
+                range(
+                    len(train["true"][i]), len(train["true"][i]) + len(test["true"][i])
+                )
+            ),
+            test["true"][i],
+            label="Test True",
+            linestyle="dotted",
+        )
+        plt.legend()
+        plt.show()
 
     exit(0)
     gg, train_hist, test_hist = train_model(model, config, dataset)

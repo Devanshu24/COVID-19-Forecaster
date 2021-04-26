@@ -5,7 +5,7 @@ import pandas as pd
 import tensorflow as tf
 import torch
 
-from utils import smoothen_data
+# from utils import smoothen_data
 
 
 class Data(object):
@@ -16,8 +16,8 @@ class Data(object):
         self.scaling_params = None
 
     def preprocess(self):
-        cols = [i for i in self.df.columns if self.df[i].dtype == float]
-        self.df[cols] = self.df[cols][self.df[cols] > 0]
+        # cols = [i for i in self.df.columns if self.df[i].dtype == float]
+        # self.df[cols] = self.df[cols][self.df[cols] > 0]
         self.df = self.df.dropna()
 
     def get_features(self, features: list):
@@ -25,15 +25,18 @@ class Data(object):
 
     def sliding_window(self, features: list, seq_len: int, j=0):
         df = self.get_features(features)
+        df = df.dropna()
+        # print(df)
+        j = 0
         xs = []
         ys = []
-        for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
+        for i in range(0, len(df) - seq_len - j, 1 + j):
             x = df[i : (i + seq_len)].to_numpy()
             y = (
                 df[(i + seq_len) : i + seq_len + 1 + j]["new_cases"]
                 .to_numpy()
                 .flatten()
-            )  # [0]
+            )[0]
             xs.append(x)
             ys.append(y)
         return torch.tensor(xs, dtype=torch.float), torch.tensor(ys, dtype=torch.float)
@@ -43,7 +46,7 @@ class Data(object):
             cols = [i for i in self.df.columns if self.df[i].dtype == float]
 
         for i in cols:
-            self.df[i] = smoothen_data(self.df[i])
+            # self.df[i] = smoothen_data(self.df[i])
             self.df[i] = (self.df[i] - self.df[i].min()) / (
                 self.df[i].max() - self.df[i].min()
             )
