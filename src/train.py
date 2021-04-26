@@ -80,7 +80,7 @@ def train_model_with_crossval(
         loss_fn2 = torch.nn.MSELoss(reduction="sum")
 
         optimiser = torch.optim.Adam(model.parameters(), lr=1e-3)
-        num_epochs = 60
+        num_epochs = config["num_epochs"]
 
         train_hist = np.zeros(num_epochs)
         test_hist = np.zeros(num_epochs)
