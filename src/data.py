@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import torch
+from sklearn.preprocessing import StandardScaler
 
 from utils import smoothen_data
 
@@ -14,36 +15,41 @@ class Data(object):
         self.previous_days = previous_days
         self.forecast_days = forecast_days
         self.scaling_params = None
+        print(self.df.info())
 
     def preprocess(self):
-        cols = [i for i in self.df.columns if self.df[i].dtype == float]
-        self.df[cols] = self.df[cols][self.df[cols] > 0]
+        # cols = [i for i in self.df.columns if self.df[i].dtype == float]
+        # self.df[cols] = self.df[cols][self.df[cols] > 0]
         self.df = self.df.dropna()
 
     def get_features(self, features: list):
-        return self.df[features].copy()
+        return self.df[features]
 
     def sliding_window(self, features: list, seq_len: int, j=0):
         df = self.get_features(features)
+        df = df.dropna()
         xs = []
         ys = []
         for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
             x = df[i : (i + seq_len)].to_numpy()
-            y = (
-                df[(i + seq_len) : i + seq_len + 1 + j]["new cases"]
-                .to_numpy()
-                .flatten()
-            )  # [0]
+            y = df[(i + seq_len) : i + seq_len + 1 + j]["new_cases"].to_numpy()
             xs.append(x)
             ys.append(y)
         return torch.tensor(xs, dtype=torch.float), torch.tensor(ys, dtype=torch.float)
 
     def smoothen_df(self, cols=None):
         if cols is None:
-            cols = [i for i in self.df.columns if self.df[i].dtype == float]
-
+            cols = [
+                i
+                for i in self.df.columns
+                if (self.df[i].dtype == float or self.df[i].dtype == int)
+            ]
+        # TODO Improve Scaling, scaling test and train both here!
         for i in cols:
             self.df[i] = smoothen_data(self.df[i])
+        scaler = StandardScaler()
+        self.df[cols] = scaler.fit_transform(self.df[cols])
+        print(self.df["new_cases"])
 
     def region_wise_normalized_df(self):
         """
