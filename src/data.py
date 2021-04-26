@@ -30,7 +30,7 @@ class Data(object):
         for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
             x = df[i : (i + seq_len)].to_numpy()
             y = (
-                df[(i + seq_len) : i + seq_len + 1 + j]["new cases"]
+                df[(i + seq_len) : i + seq_len + 1 + j]["new_cases"]
                 .to_numpy()
                 .flatten()
             )  # [0]
@@ -44,6 +44,9 @@ class Data(object):
 
         for i in cols:
             self.df[i] = smoothen_data(self.df[i])
+            self.df[i] = (self.df[i] - self.df[i].min()) / (
+                self.df[i].max() - self.df[i].min()
+            )
 
     def region_wise_normalized_df(self):
         """
