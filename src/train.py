@@ -10,10 +10,9 @@ from data import Data
 from model import CoronaVirusPredictor
 
 config = {
-    "num_epochs": 60,
+    "num_epochs": 120,
     "features": [
         "new_cases",
-        "7_day_lagged_grocery_and_pharmacy_percent_change_from_baseline",
     ],
 }
 
@@ -106,13 +105,14 @@ def train_model_with_crossval(
         with torch.no_grad():
             y_train_pred = model(X_train.float()).squeeze()
 
-            train["pred"][v] = y_train_pred.numpy().tolist()
-            train["true"][v] = y_train.numpy().tolist()
+            train["pred"][v] = y_train_pred.numpy().flatten().tolist()
+            train["true"][v] = y_train.numpy().flatten().tolist()
             model.eval()
             y_test_pred = model(X_test.float()).squeeze()
-
-            test["pred"][v] = y_test_pred.numpy().tolist()
-            test["true"][v] = y_test.numpy().tolist()
+            print(y_test_pred.shape)
+            test["pred"][v] = y_test_pred.numpy().flatten().tolist()
+            print(len(test["pred"][v]))
+            test["true"][v] = y_test.numpy().flatten().tolist()
 
             test_error_mae.append(
                 loss_fn(y_test_pred.float().flatten(), y_test.float().flatten()).item()
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # df = pd.DataFrame({"new cases": np.arange(200)})
     print("I am starting!\n")
     df = pd.read_csv("../data/India_OWID_with_mobility_data.csv")
-    dataset = Data(df, 1, 2)
+    dataset = Data(df, 1, 1)
     # dataset.preprocess()
     dataset.smoothen_df()
     print(dataset.get_features(config["features"]).count())
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     print(y.shape)
 
     # exit(0)
-    model = CoronaVirusPredictor(2, 1, 2)
+    model = CoronaVirusPredictor(1, 1, 1)
     tscv = TimeSeriesSplit()
     r2_scores, test_error_mae, test_error_mse, train, test = train_model_with_crossval(
         model,

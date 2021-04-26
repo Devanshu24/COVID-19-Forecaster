@@ -32,7 +32,7 @@ class Data(object):
         # j = 0
         xs = []
         ys = []
-        for i in range(0, len(df) - seq_len - j, 1 + j):
+        for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
             x = df[i : (i + seq_len)].to_numpy()
             y = df[(i + seq_len) : i + seq_len + 1 + j]["new_cases"].to_numpy()
             xs.append(x)
