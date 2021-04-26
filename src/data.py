@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import torch
-
-# from utils import smoothen_data
 from sklearn.preprocessing import StandardScaler
+
+from utils import smoothen_data
 
 
 class Data(object):
@@ -45,6 +45,8 @@ class Data(object):
                 if (self.df[i].dtype == float or self.df[i].dtype == int)
             ]
         # TODO Improve Scaling, scaling test and train both here!
+        for i in cols:
+            self.df[i] = smoothen_data(self.df[i])
         scaler = StandardScaler()
         self.df[cols] = scaler.fit_transform(self.df[cols])
         print(self.df["new_cases"])
