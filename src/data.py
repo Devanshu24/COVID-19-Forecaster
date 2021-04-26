@@ -28,8 +28,6 @@ class Data(object):
     def sliding_window(self, features: list, seq_len: int, j=0):
         df = self.get_features(features)
         df = df.dropna()
-        # print(df)
-        # j = 0
         xs = []
         ys = []
         for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
@@ -46,15 +44,10 @@ class Data(object):
                 for i in self.df.columns
                 if (self.df[i].dtype == float or self.df[i].dtype == int)
             ]
-
+        # TODO Improve Scaling, scaling test and train both here!
         scaler = StandardScaler()
         self.df[cols] = scaler.fit_transform(self.df[cols])
         print(self.df["new_cases"])
-        # for i in cols:
-        #     # self.df[i] = smoothen_data(self.df[i])
-        #     self.df[i] = (self.df[i] - self.df[i].min()) / (
-        #         self.df[i].max() - self.df[i].min()
-        #     )
 
     def region_wise_normalized_df(self):
         """
