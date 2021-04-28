@@ -1,7 +1,7 @@
 import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
-import numpy as np
+import numpy as np  # noqa
 import pandas as pd
 from keras.layers import LSTM, Dense
 from keras.models import Sequential
@@ -54,13 +54,13 @@ arr = df.drop(
 ).T.values.flatten()
 arr = arr[60:]
 # define input sequence
-arr = np.diff(arr)
+# arr = np.diff(arr)
 raw_seq = arr[:-42]
 # raw_seq = np.arange(400, step = 10)
 # choose a number of time steps
 n_steps_in, n_steps_out = 28, 14
 # split into samples
-X, y = sliding_window(raw_seq, n_steps_in, n_steps_out)
+X, y = split_sequence(raw_seq, n_steps_in, n_steps_out)
 print(X.shape, y.shape)
 # print(X)
 # print(y)
@@ -73,13 +73,11 @@ for train_index, test_index in tscv.split(X):
     X_train, y_train = (X[train_index]), (y[train_index])
     X_test, y_test = (X[test_index]), (y[test_index])
     print(X_train.shape, y_train.shape)
-    # print(X_train, y_train)
 
     print(X_test.shape, y_test.shape)
-    # print(X_test, y_test)
 
     n_features = 1
-    X = X.reshape((X.shape[0], X.shape[1], n_features))
+    X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], n_features))
     # define model
     model = Sequential()
     model.add(
@@ -94,13 +92,13 @@ for train_index, test_index in tscv.split(X):
     model.add(Dense(n_steps_out))
     model.compile(optimizer="adam", loss="mse")
     # fit model
-    model.fit(X, y, epochs=50, verbose=0)
+    model.fit(X_train, y_train, epochs=50, verbose=0)
     # demonstrate prediction
-    x_input = arr[-42:-14]
-    x_input = x_input.reshape((1, n_steps_in, n_features))
+    x_input = X_test
+    x_input = x_input.reshape((X_test.shape[0], n_steps_in, n_features))
     yhat = model.predict(x_input, verbose=0)
-    print("r2: ", r2_score(yhat.flatten(), arr[-14:]))
-    print("mae: ", mean_absolute_error(yhat.flatten(), arr[-14:]))
-    print("mse: ", mean_squared_error(yhat.flatten(), arr[-14:]))
-    print("mape:", mean_absolute_percentage_error(yhat.flatten(), arr[-14:]))
+    print("r2: ", r2_score(yhat.flatten(), y_test.flatten()))
+    print("mae: ", mean_absolute_error(yhat.flatten(), y_test.flatten()))
+    print("mse: ", mean_squared_error(yhat.flatten(), y_test.flatten()))
+    print("mape:", mean_absolute_percentage_error(yhat.flatten(), y_test.flatten()))
     print("@@@@@@@@@@@@@@@@@@@@@@@")
