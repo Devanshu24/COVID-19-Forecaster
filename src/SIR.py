@@ -249,4 +249,4 @@ if __name__ == "__main__":
         time_beg = time.time()
         #     prior_new = pm.sample_prior_predictive(samples=5000, random_seed=24)
         trace = pm.sample(draws=500, target_accept=0.99, tune=2000)
-    plot_SIR(trace, data_begin)
+    plot_SIR(trace, data_begin, confirmed_cases)
