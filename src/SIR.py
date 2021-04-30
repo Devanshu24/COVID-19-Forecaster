@@ -1,16 +1,13 @@
 import datetime
 import time
 
+import numpy as np
 import pandas as pd
 import pymc3 as pm
-import seaborn as sns
 import theano
 import theano.tensor as tt
 
-sns.set()
-sns.set_context("paper")
-# import matplotlib.pyplot as plt
-import numpy as np
+from utils import plot_SIR
 
 confirmed_cases_url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"  # noqa
 confirmed_cases = pd.read_csv(confirmed_cases_url, sep=",")
@@ -90,11 +87,9 @@ if __name__ == "__main__":
             I_begin=I_begin,
             N=N_india,
         )
-        #     new_infections_obs = np.diff(cases_obs)
 
         new_infections_obs = np.diff(cases_obs)
 
-        # Approximates Poisson
         # calculate the likelihood of the model:
         # observed cases are distributed following studentT around the model
 
@@ -254,4 +249,4 @@ if __name__ == "__main__":
         time_beg = time.time()
         #     prior_new = pm.sample_prior_predictive(samples=5000, random_seed=24)
         trace = pm.sample(draws=500, target_accept=0.99, tune=2000)
-        print("Model run in {:.2f} s".format(time.time() - time_beg))
+    plot_SIR(trace, data_begin)
