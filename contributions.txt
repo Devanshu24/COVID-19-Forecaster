@@ -1,0 +1,31 @@
+As a group, we have conducted a whole LOT of experiments that have been built on top of each others' work. A lot of the work mentioned below is not included in the final report to keep the report only relevant.
+
+Devanshu Shah
+- Data Collection, Analysis, Exploration and Engineering.
+- Compartmental model
+- Running experiments, debugging, analysis, plotting
+- LSTM model development
+- Writing
+- Literature Review
+
+Asad Hazariwala
+- Prophet Algorithm development
+- SARIMAX Algorithm development
+- Running experiments, debugging, analysis, plotting
+
+Vybhav Jayashankar
+- Data Analysis, Visualization
+- Development of LSTM based models
+- Event centric Analysis
+- Running experiments, debugging, analysis, plotting
+- Writing
+- Literature Review
+
+Sharad Chitlangia
+- Seeded major parts of the report. That is, autoregressive formulation, etc.
+- Development of the Meta Learning Framework
+- Development of the Causal Analysis Framework
+- Running experiments, debugging, analysis, plotting
+- Major parts of the writing 
+- LSTM based models, Seq2seq models
+- Temporal Fusion Transformer based Networks for Forecasting

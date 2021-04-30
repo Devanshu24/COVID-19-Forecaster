@@ -1,3 +1,4 @@
+import os
 import random
 
 import numpy as np
@@ -10,9 +11,11 @@ from utils import smoothen_data
 
 
 def get_pure_cases_df():
-    df = pd.read_csv("../data/India_OWID.csv")
+    path = os.path.join(os.path.dirname(__file__), "../data/India_OWID.csv")
+    df = pd.read_csv(path)
     df = df[["date", "new_cases"]]
-    return df
+    df["date"] = pd.to_datetime(df["date"])
+    return df.dropna()
 
 
 class Data(object):

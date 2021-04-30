@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import seaborn as sns
 import torch
@@ -13,18 +11,11 @@ from data import get_pure_cases_df
 from model import CoronaVirusPredictor
 from utils import sliding_window
 
-model = CoronaVirusPredictor(n_features=1, n_hidden=100, seq_len=28, n_layers=2)
 
-model.train()
-
-
-def train_model_with_crossval(
-    model,
-    df,
-):
+def train_model_with_crossval(model, df, epochs):
 
     model = model.float()
-
+    X, y = sliding_window(df, 28, 14)
     r2_scores, test_error_mse, test_error_mae, test_error_mape = [], [], [], []
     train, test = {}, {}
     train["feats"], train["pred"], train["true"] = {}, {}, {}
@@ -50,7 +41,7 @@ def train_model_with_crossval(
         loss_fn3 = nn.PoissonNLLLoss(log_input=False)
 
         optimiser = torch.optim.Adam(model.parameters(), lr=1e-4)
-        num_epochs = 1000
+        num_epochs = epochs
 
         train_hist = np.zeros(num_epochs)
         test_hist = np.zeros(num_epochs)
@@ -65,13 +56,8 @@ def train_model_with_crossval(
                 for i in range(y_train.shape[1]):
                     model.train()
                     model.reset_hidden_state()
-                    #             print(f"sadasda", X_train.shape)
+
                     y_pred = model(X_train.float()).squeeze()
-                    if t > 9990:
-                        print(X_train)
-                        print(y_pred)
-                        print(y_train)
-                        time.sleep(1)
                     if t == num_epochs - 1:
                         plotmefake.append(
                             (torch.cat((X_train, y_pred.reshape(-1, 1, 1)), dim=1))
@@ -89,7 +75,6 @@ def train_model_with_crossval(
                     loss.backward()
 
                     optimiser.step()
-                    tr.set_postfix({"loss": f"(  {loss.item()}  )"})
 
         with torch.no_grad():
             model.eval()
@@ -150,6 +135,8 @@ def train_model_with_crossval(
 
 if __name__ == "__main__":
     df = get_pure_cases_df()
+    model = CoronaVirusPredictor(n_features=1, n_hidden=100, seq_len=28, n_layers=2)
+    model.train()
     X, y = sliding_window(df, 28, 14)
     (
         r2_scores,
@@ -160,13 +147,7 @@ if __name__ == "__main__":
         test,
         plotme,
         plotmefake,
-    ) = train_model_with_crossval(
-        model,
-        df,
-    )
+    ) = train_model_with_crossval(model, df, 100)
     print(
-        r2_scores[:-1].mean(),
-        test_error_mae.mean(),
-        np.sqrt(test_error_mse).mean(),
-        test_error_mape.mean(),
+        f"R2: {r2_scores[:-1].mean()},MAE: {test_error_mae.mean()},RMSE: {np.sqrt(test_error_mse.mean())},MAPE: {test_error_mape.mean()}"  # noqa
     )

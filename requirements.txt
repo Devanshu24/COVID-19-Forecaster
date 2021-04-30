@@ -7,3 +7,9 @@ scikit-learn
 seaborn
 wandb
 keras
+fbprophet
+pymc3
+theano
+statsmodels
+tqdm
+scipy

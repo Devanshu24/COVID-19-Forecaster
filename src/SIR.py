@@ -1,5 +1,4 @@
 import datetime
-import time
 
 import numpy as np
 import pandas as pd
@@ -27,11 +26,11 @@ date_data_end = confirmed_cases.loc[
 month, day, year = map(int, date_data_end.split("/"))
 date_data_end = datetime.date(year + 2000, month, day)
 date_today = date_data_end + datetime.timedelta(days=1)
-print(
-    "Cases yesterday ({}): {} and day before yesterday: {}".format(
-        date_data_end.isoformat(), *cases_obs[:-3:-1]
-    )
-)
+# print(
+#     "Cases yesterday ({}): {} and day before yesterday: {}".format(
+#         date_data_end.isoformat(), *cases_obs[:-3:-1]
+#     )
+# )
 num_days = len(cases_obs)
 
 np.random.seed(0)
@@ -57,8 +56,7 @@ def SIR_model(λ, μ, S_begin, I_begin, N):
     return S_all, I_all, new_I_all
 
 
-if __name__ == "__main__":
-
+def get_model():
     with pm.Model() as model:
         # true cases at begin of loaded data but we do not know the real number
 
@@ -245,8 +243,12 @@ if __name__ == "__main__":
         # -------------------------------------------------------------------------- #
         # run model, pm trains and predicts when calling this
         # -------------------------------------------------------------------------- #
+        return model
 
-        time_beg = time.time()
-        #     prior_new = pm.sample_prior_predictive(samples=5000, random_seed=24)
+
+if __name__ == "__main__":
+
+    model = get_model()
+    with model:
         trace = pm.sample(draws=500, target_accept=0.99, tune=2000)
     plot_SIR(trace, data_begin, confirmed_cases)
