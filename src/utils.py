@@ -86,7 +86,7 @@ def plot_SIR(trace, data_begin, confirmed_cases):
         np.diff(
             np.array(
                 confirmed_cases.loc[
-                    confirmed_cases["Country/Region"] == "India", data_begin:"3/13/21"
+                    confirmed_cases["Country/Region"] == "India", data_begin:"5/30/20"
                 ]
             )[0]
         ),
@@ -98,7 +98,7 @@ def plot_SIR(trace, data_begin, confirmed_cases):
         np.diff(
             np.array(
                 confirmed_cases.loc[
-                    confirmed_cases["Country/Region"] == "India", data_begin:"3/12/21"
+                    confirmed_cases["Country/Region"] == "India", data_begin:"5/29/20"
                 ]
             )[0]
         ),
@@ -110,7 +110,7 @@ def plot_SIR(trace, data_begin, confirmed_cases):
         np.diff(
             np.array(
                 confirmed_cases.loc[
-                    confirmed_cases["Country/Region"] == "India", "3/12/21":"3/26/21"
+                    confirmed_cases["Country/Region"] == "India", "5/29/20":"6/12/20"
                 ]
             )[0]
         ),
