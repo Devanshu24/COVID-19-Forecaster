@@ -9,6 +9,12 @@ from sklearn.preprocessing import StandardScaler
 from utils import smoothen_data
 
 
+def get_pure_cases_df():
+    df = pd.read_csv("../data/India_OWID.csv")
+    df = df[["date", "new_cases"]]
+    return df
+
+
 class Data(object):
     def __init__(self, dataframe: pd.DataFrame, previous_days: int, forecast_days: int):
         self.df = dataframe

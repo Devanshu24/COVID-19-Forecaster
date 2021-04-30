@@ -1,10 +1,11 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+import torch
 from scipy.signal import savgol_filter
 
 mpl.rcParams.update(mpl.rcParamsDefault)
-import seaborn as sns
 
 
 def smoothen_data(data):
@@ -121,3 +122,22 @@ def plot_SIR(trace, data_begin, confirmed_cases):
     plt.ylabel("Case Counts")
     plt.legend(loc="best")
     plt.savefig("India(1-5--29-5--2020).svg")
+
+
+def sliding_window(df, seq_len: int, j=0, start=0, max_num=None):
+    df = df.drop("date", axis=1)
+    df = df.dropna()
+    df = df.iloc[start:]
+    j -= 1
+    xs = []
+    ys = []
+    num = 0
+    for i in range(0, len(df) - seq_len - j, seq_len + 1 + j):
+        x = df[i : (i + seq_len)].to_numpy()
+        y = df[(i + seq_len) : i + seq_len + 1 + j]["new_cases"].to_numpy()
+        xs.append(x)
+        ys.append(y)
+        num += 1
+        if max_num and num >= max_num:
+            break
+    return torch.tensor(xs, dtype=torch.float64), torch.tensor(ys, dtype=torch.float64)
